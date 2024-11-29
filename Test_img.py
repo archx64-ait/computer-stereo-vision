@@ -1,7 +1,6 @@
 from __future__ import print_function
 import argparse
 import os
-import random
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
@@ -16,8 +15,6 @@ from torch.amp import autocast
 import os
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:512"
-
-# 2012 data /media/jiaren/ImageNet/data_scene_flow_2012/testing/
 
 parser = argparse.ArgumentParser(description='PSMNet')
 parser.add_argument('--KITTI', default='2015',
@@ -46,7 +43,6 @@ args.cuda = not args.no_cuda and torch.cuda.is_available()
 torch.manual_seed(args.seed)
 if args.cuda:
     torch.cuda.manual_seed(args.seed)
-
 if args.model == 'stackhourglass':
     model = stackhourglass(args.maxdisp)
 elif args.model == 'basic':
@@ -89,7 +85,6 @@ def save_disparity_map(pred_disp, output_path):
     disp_normalized = cv2.normalize(pred_disp, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
     disp_normalized = np.uint8(disp_normalized)
 
-    # Apply a colormap
     disp_colored = cv2.applyColorMap(disp_normalized, cv2.COLORMAP_JET)
 
     # Save using OpenCV
@@ -144,12 +139,7 @@ def main():
         else:
             img = pred_disp
 
-        save_disparity_map(img, 'Test_disparity_colored.png')
-        
-        
-        # img = (img*256).astype('uint16')
-        # img = Image.fromarray(img)
-        # img.save('Test_disparity.png')
+        save_disparity_map(img, 'output/Test_disparity_colored.png')        
 
         torch.cuda.empty_cache()
 
